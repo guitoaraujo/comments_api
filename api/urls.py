@@ -8,6 +8,6 @@ router.register(r'tags', TagViewSet)
 
 urlpatterns = [
 	path('', include(router.urls)),
-	path('comments/<int:comment_id>/tags/', CommentViewSet.as_view({'post': 'tags', 'get': 'tags'}), name='add-tag-to-comment'),
+	path('comments/<int:comment_id>/tags/', CommentViewSet.as_view({'post': 'tags', 'get': 'tags'}), name='comment-tags'),
 	path('comments/pandas_data/', CommentViewSet.as_view({'get': 'pandas_data'}), name='pandas-data'),
 ]
