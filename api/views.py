@@ -11,7 +11,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 	queryset = Comment.objects.all()
 	serializer_class = CommentSerializer
 	filter_backends = [filters.SearchFilter, TagFilterBackend]
-	search_fields = ['text', 'tags__name']
+	search_fields = ['text']
 
 	@action(detail=True, methods=['get', 'post'])
 	def tags(self, request, pk=None):	
@@ -23,7 +23,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 			return Response(serializer.data, status=status.HTTP_200_OK)
 		
 		elif request.method == 'POST':
-			tag_name = request.data.get('tag')
+			tag_name = request.data.get('tag', '').strip()
 			if not tag_name:
 				return Response({"detail": "Tag name is required."}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -31,8 +31,8 @@ class CommentViewSet(viewsets.ModelViewSet):
 			comment.tags.add(tag)
 			comment.save()
 			if created:
-				subject = "Nova Tag Criada"
-				message = f"A nova tag '{tag_name}' foi criada e adicionada ao comentário."
+				subject = "New Tag Created"
+				message = f"The new tag '{tag_name}' was created and added to the comment."
 				from_email = "system@api.com"
 				recipient_list = ["admin@api.com"]
 				test_task.delay(subject, message, from_email, recipient_list)
